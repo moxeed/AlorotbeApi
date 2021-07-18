@@ -1,6 +1,6 @@
 ﻿namespace Core.Planing
 {
-    public enum Moods
+    public enum Moods : byte
     {
         Happy,
         SoSo,
