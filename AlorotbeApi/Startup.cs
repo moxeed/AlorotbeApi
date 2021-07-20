@@ -15,6 +15,7 @@ namespace AlorotbeApi
 {
     public class Startup
     {
+        public const string AllowAny = nameof(AllowAny);
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -58,6 +59,9 @@ namespace AlorotbeApi
                     },
                 });
             });
+
+            services.AddCors(c => c.AddPolicy(AllowAny, p => 
+                p.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader()));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -76,6 +80,7 @@ namespace AlorotbeApi
             app.UseAuthorization();
             app.UseAuthentication();
 
+            app.UseCors(AllowAny);
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
