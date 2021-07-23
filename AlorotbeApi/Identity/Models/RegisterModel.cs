@@ -22,9 +22,11 @@ namespace Alorotbe.Api.Identity.Models
         [Required]
         public int? CityId { get; set; }
         [Required]
-        public int? GroupId { get; set; }
+        public int? GradeId { get; set; }
+        [Required]
+        public int? MajorId { get; set; }
         public int? SuppporterId { get; set; }
 
-        internal Student Student => new(Name, LastName, AvgLevel, GPA, HasSupporter.Value, CityId.Value, GroupId.Value, SuppporterId);
+        internal Student Student => new(Name, LastName, AvgLevel, GPA, HasSupporter.Value, CityId.Value, MajorId.Value, GradeId.Value, SuppporterId);
     }
 }

@@ -1,4 +1,6 @@
-﻿using Core.BasicInfo;
+﻿using Alorotbe.Core.BasicInfo;
+using Alorotbe.Persistence.Planning.Views;
+using Core.BasicInfo;
 using Core.Identity;
 using Core.Planing;
 using Microsoft.AspNetCore.Identity;
@@ -18,7 +20,8 @@ namespace Alorotbe.Persistence
 
         #region BasicInfo
         public DbSet<Course> Courses { get; set; }
-        public DbSet<Group> Groups { get; set; }
+        public DbSet<Major> Majors { get; set; }
+        public DbSet<Grade> Grades { get; set; }
         public DbSet<City> Cities { get; set; }
         #endregion
 
@@ -30,6 +33,9 @@ namespace Alorotbe.Persistence
         #region Planning
         public DbSet<DailyStudy> DailyStudies { get; set; }
         public DbSet<CourseStudy> CourseStudeies { get; set; }
+
+        public DbSet<StudentScoreAll> StudentScoreAlls { get; set;}
+        public DbSet<StudentScoreDaily> StudentScoreDailies { get; set;}
         #endregion
 
         protected override void OnModelCreating(ModelBuilder builder)

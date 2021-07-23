@@ -3,7 +3,6 @@ using Alorotbe.Api.Common;
 using Alorotbe.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -33,10 +32,17 @@ namespace Alorotbe.Api.BasicInfo
         }
 
         [HttpGet]
-        public async Task<IActionResult> Group() 
+        public async Task<IActionResult> Grade() 
         {
-            var groups = await _context.Groups.ToListAsync();
+            var groups = await _context.Grades.ToListAsync();
             return Ok(groups.Select(g => new ItemModel(g)));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Major() 
+        {
+            var groups = await _context.Majors.ToListAsync();
+            return Ok(groups.Select(m => new ItemModel(m)));
         }
     }
 }

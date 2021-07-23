@@ -4,7 +4,8 @@ using Alorotbe.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -34,6 +35,50 @@ namespace Alorotbe.Api.Planning
             catch {
                 return BadRequest();
             }
+        }
+
+        [HttpGet("/[controller]/Top/Test/{count}")]
+        public async Task<IActionResult> TopAllByTest(int count)
+        {
+           var scores = await _context.StudentScoreAlls
+                .OrderByDescending(t => t.TotalTestCount)
+                .Take(count)
+                .ToListAsync();
+
+           return Ok(scores.Select(s => new StudentScoreModel(s)));
+        }
+
+        [HttpGet("/[controller]/Top/Time/{count}")]
+        public async Task<IActionResult> TopAllByTime(int count)
+        {
+           var scores = await _context.StudentScoreAlls
+                .OrderByDescending(t => t.TotalStudy)
+                .Take(count)
+                .ToListAsync();
+
+           return Ok(scores.Select(s => new StudentScoreModel(s)));
+        }
+
+        [HttpGet("/[controller]/DailyTop/Test/{count}")]
+        public async Task<IActionResult> DailyTopAllByTest(int count)
+        {
+           var scores = await _context.StudentScoreDailies
+                .OrderByDescending(t => t.TotalTestCount)
+                .Take(count)
+                .ToListAsync();
+
+           return Ok(scores.Select(s => new StudentScoreModel(s)));
+        }
+
+        [HttpGet("/[controller]/DailyTop/Time/{count}")]
+        public async Task<IActionResult> DailyAllByTime(int count)
+        {
+           var scores = await _context.StudentScoreDailies
+                .OrderByDescending(t => t.TotalStudy)
+                .Take(count)
+                .ToListAsync();
+
+           return Ok(scores.Select(s => new StudentScoreModel(s)));
         }
     }
 }

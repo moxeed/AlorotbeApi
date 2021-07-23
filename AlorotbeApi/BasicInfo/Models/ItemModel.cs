@@ -1,4 +1,5 @@
-﻿using Core.BasicInfo;
+﻿using Alorotbe.Core.BasicInfo;
+using Core.BasicInfo;
 
 namespace Alorotbe.Api.BasicInfo.Models
 {
@@ -13,10 +14,16 @@ namespace Alorotbe.Api.BasicInfo.Models
             Name = course.CourseName;
         }
 
-        public ItemModel(Group group)
+        public ItemModel(Major major)
         {
-            Id = group.GroupId;
-            Name = group.GroupName;
+            Id = major.MajorId;
+            Name = major.MajorName;
+        }
+
+        public ItemModel(Grade grade)
+        {
+            Id = grade.GradeId;
+            Name = grade.GradeName;
         }
 
         public ItemModel(City city) 

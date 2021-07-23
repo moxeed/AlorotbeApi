@@ -1,4 +1,5 @@
-﻿using Core.BasicInfo;
+﻿using Alorotbe.Core.BasicInfo;
+using Core.BasicInfo;
 using System;
 
 namespace Core.Identity
@@ -12,18 +13,20 @@ namespace Core.Identity
         public decimal? GPA { get; private set; }
         public bool HasSupporter { get; private set; }
 
-        public int CityId { get; private set; }
-        public int GroupId { get; private set; }
+        public int? CityId { get; private set; }
+        public int GradeId { get; private set;}
+        public int MajorId { get; private set;}
         public int UserId { get; private set; }
         public int? SuppporterId { get; private set; }
         public City City { get; private set; }
-        public Group Group { get; private set; }
+        public Grade Grade { get; private set; }
+        public Major Major { get; private set; }
         public User User { get; private set; }
         public Supporter Supporter { get; set; }
 
         public Student() { }
 
-        public Student(string name, string lastName, int? avgLevel, decimal? gPA, bool hasSupporter, int cityId, int groupId, int? suppporterId)
+        public Student(string name, string lastName, int? avgLevel, decimal? gPA, bool hasSupporter, int cityId, int majorId, int gradeId, int? suppporterId)
         {
             Name = name;
             LastName = lastName;
@@ -31,7 +34,8 @@ namespace Core.Identity
             GPA = gPA;
             HasSupporter = hasSupporter;
             CityId = cityId;
-            GroupId = groupId;
+            GradeId = gradeId;
+            MajorId = majorId;
             SuppporterId = suppporterId;
         }
 

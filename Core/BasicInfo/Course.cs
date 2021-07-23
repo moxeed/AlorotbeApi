@@ -1,11 +1,13 @@
-﻿namespace Core.BasicInfo
+﻿using Alorotbe.Core.BasicInfo;
+
+namespace Core.BasicInfo
 {
     public class Course
     {
         public int CourseId { get; private set; }
         public string CourseName { get; private set; }
         
-        public int GroupId { get; private set; }
-        public Group Group { get; private set; }
+        public int MajorId { get; private set; }
+        public Major Major { get; private set; }
     }
 }
