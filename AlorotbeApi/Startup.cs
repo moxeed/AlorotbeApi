@@ -73,14 +73,13 @@ namespace AlorotbeApi
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AlorotbeApi v1"));
             }
 
-            app.UseHttpsRedirection();
-
             app.UseRouting();
+
+            app.UseCors(AllowAny);
 
             app.UseAuthorization();
             app.UseAuthentication();
 
-            app.UseCors(AllowAny);
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
