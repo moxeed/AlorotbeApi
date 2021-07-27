@@ -11,8 +11,9 @@ namespace Alorotbe.Api.Planning.Models
         public string GardeName { get; }
         public string TotalStudy { get; }
         public int TotalTestCount { get; }
+        public int Score { get; }
 
-        public StudentScoreModel(StudentScoreAll score)
+        public StudentScoreModel(StudentScore score)
         {
             Name = score.Name;
             LastName = score.LastName;
@@ -21,17 +22,7 @@ namespace Alorotbe.Api.Planning.Models
             TotalTestCount = score.TotalTestCount;
             var timeSpan = TimeSpan.FromMinutes(score.TotalStudy);
             TotalStudy = GetTimeString(timeSpan);
-        }
-
-        public StudentScoreModel(StudentScoreDaily score)
-        {
-            Name = score.Name;
-            LastName = score.LastName;
-            MajorName = score.MajorName;
-            GardeName = score.GradeName;
-            TotalTestCount = score.TotalTestCount;
-            var timeSpan = TimeSpan.FromMinutes(score.TotalStudy);
-            TotalStudy = GetTimeString(timeSpan);
+            Score = score.Score;
         }
 
         private string GetTimeString(TimeSpan timeSpan) => 

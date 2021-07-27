@@ -34,8 +34,7 @@ namespace Alorotbe.Persistence
         public DbSet<DailyStudy> DailyStudies { get; set; }
         public DbSet<CourseStudy> CourseStudeies { get; set; }
 
-        public DbSet<StudentScoreAll> StudentScoreAlls { get; set;}
-        public DbSet<StudentScoreDaily> StudentScoreDailies { get; set;}
+        public DbSet<StudentScore> StudentScores { get; set;}
         #endregion
 
         protected override void OnModelCreating(ModelBuilder builder)

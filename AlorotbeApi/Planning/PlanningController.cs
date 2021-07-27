@@ -15,20 +15,32 @@ namespace Alorotbe.Api.Planning
     {
         private readonly ApplicationDbContext _context;
 
-        public PlanningController(ApplicationDbContext context)
+        public PlanningController(ApplicationDbContext context) : base(context)
         {
             _context = context;
+        }
+
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Submit()
+        {
+            var isSubmited = await _context.DailyStudies.AnyAsync(d => d.StudeyDate.Date == System.DateTime.Now.Date);
+            return Ok(isSubmited);
         }
 
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Submit(DailtyStudyModel model)
         {
-            var studentId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var study = model.DailyStudy(studentId);
-            _context.Add(study);
+            var isSubmited = await _context.DailyStudies.AnyAsync(d => d.StudeyDate.Date == System.DateTime.Now.Date);
+
+            if (isSubmited)
+                return BadRequest("گزارش امروز ثبت شده است");
 
             try {
+                var study = model.DailyStudy(StudentId.Value);
+                _context.Add(study);
+
                 await _context.SaveChangesAsync();
                 return Ok();
             }
@@ -37,48 +49,27 @@ namespace Alorotbe.Api.Planning
             }
         }
 
-        [HttpGet("/[controller]/Top/Test/{count}")]
-        public async Task<IActionResult> TopAllByTest(int count)
+        [HttpGet]
+        public async Task<IActionResult> Top([FromQuery] TopFilterModel model)
         {
-           var scores = await _context.StudentScoreAlls
-                .OrderByDescending(t => t.TotalTestCount)
-                .Take(count)
-                .ToListAsync();
-
-           return Ok(scores.Select(s => new StudentScoreModel(s)));
+            var data = _context.StudentScores.FromSqlRaw("GetTopStudent @p0, @p1, @p2, @p3", model.Period, model.Criterion, model.Count, model.GradeId);
+            var scores = await data.ToListAsync();
+            return Ok(scores.Select(s => new StudentScoreModel(s)));
         }
 
-        [HttpGet("/[controller]/Top/Time/{count}")]
-        public async Task<IActionResult> TopAllByTime(int count)
+        [HttpGet("{count?}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Study(int? count) 
         {
-           var scores = await _context.StudentScoreAlls
-                .OrderByDescending(t => t.TotalStudy)
-                .Take(count)
-                .ToListAsync();
+            count ??= int.MaxValue;
+            var studies = await _context.DailyStudies
+                .Include(d => d.CourseStudies)
+                .ThenInclude(c => c.Course)
+                .Where(d => d.StudentId == StudentId)
+                .OrderByDescending(d => d.StudeyDate)
+                .Take(count.Value).ToListAsync();
 
-           return Ok(scores.Select(s => new StudentScoreModel(s)));
-        }
-
-        [HttpGet("/[controller]/DailyTop/Test/{count}")]
-        public async Task<IActionResult> DailyTopAllByTest(int count)
-        {
-           var scores = await _context.StudentScoreDailies
-                .OrderByDescending(t => t.TotalTestCount)
-                .Take(count)
-                .ToListAsync();
-
-           return Ok(scores.Select(s => new StudentScoreModel(s)));
-        }
-
-        [HttpGet("/[controller]/DailyTop/Time/{count}")]
-        public async Task<IActionResult> DailyAllByTime(int count)
-        {
-           var scores = await _context.StudentScoreDailies
-                .OrderByDescending(t => t.TotalStudy)
-                .Take(count)
-                .ToListAsync();
-
-           return Ok(scores.Select(s => new StudentScoreModel(s)));
+            return Ok(studies.Select(s => new DailtyStudyModel(s)));
         }
     }
 }
