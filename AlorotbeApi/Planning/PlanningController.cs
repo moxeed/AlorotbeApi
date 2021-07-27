@@ -15,7 +15,7 @@ namespace Alorotbe.Api.Planning
     {
         private readonly ApplicationDbContext _context;
 
-        public PlanningController(ApplicationDbContext context) : base(context)
+        public PlanningController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -24,7 +24,8 @@ namespace Alorotbe.Api.Planning
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Submit(DailtyStudyModel model)
         {
-            var study = model.DailyStudy(StudentId.Value);
+            var studentId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var study = model.DailyStudy(studentId);
             _context.Add(study);
 
             try {
@@ -78,16 +79,6 @@ namespace Alorotbe.Api.Planning
                 .ToListAsync();
 
            return Ok(scores.Select(s => new StudentScoreModel(s)));
-        }
-
-        [HttpGet("{count?}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> MyStudies(int? count) 
-        {
-            count ??= int.MaxValue;
-            var userId = 
-            var studies = _context.Students
-
         }
     }
 }

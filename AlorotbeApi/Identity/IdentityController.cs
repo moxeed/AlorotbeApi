@@ -21,7 +21,7 @@ namespace Alorotbe.Api.Controllers
         public IdentityController(SignInManager<User> signInManager,
                                   UserManager<User> userManager,
                                   JwtTokenManager tokenManager,
-                                  ApplicationDbContext context) : base(context)
+                                  ApplicationDbContext context)
         {
             _signInManager = signInManager;
             _userManager = userManager;
