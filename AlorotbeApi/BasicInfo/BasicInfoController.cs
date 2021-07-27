@@ -12,7 +12,7 @@ namespace Alorotbe.Api.BasicInfo
     {
         private readonly ApplicationDbContext _context;
 
-        public BasicInfoController(ApplicationDbContext context)
+        public BasicInfoController(ApplicationDbContext context) : base(context)
         {
             _context = context;
         }
