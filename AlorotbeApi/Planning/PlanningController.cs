@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -24,17 +25,42 @@ namespace Alorotbe.Api.Planning
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Submit(DailtyStudyModel model)
         {
-            var studentId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var study = model.DailyStudy(studentId);
+            var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var studentId = _context.Students.FirstOrDefault(s => s.UserId == userId)?.StudentId;
+
+            if (!studentId.HasValue)
+                return BadRequest("Faild");
+
+            var study = model.DailyStudy(studentId.Value);
             _context.Add(study);
 
             try {
                 await _context.SaveChangesAsync();
-                return Ok();
+                return Ok(new SuccessRespnose());
             }
-            catch {
-                return BadRequest();
+            catch(Exception e) {
+                return BadRequest(new ErrorResponse{ Error = "Invalid Data"});
             }
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+
+        public async Task<IActionResult> Rank()
+        {
+            var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var studentScore = _context.StudentScoreDailies.FirstOrDefault(s => s.UserId == userId);
+
+            var sameGrades = _context.StudentScoreDailies.Where(d => d.MajorId == studentScore.MajorId 
+            && d.GradeId == studentScore.GradeId);
+
+            var testRank = await _context.StudentScoreDailies.CountAsync(d => d.TotalTestCount > studentScore.TotalTestCount);
+            var timeRank = await _context.StudentScoreDailies.CountAsync(d => d.TotalStudy > studentScore.TotalStudy); 
+            
+            return Ok(new RankModel 
+            {
+                TestRank = testRank,
+                TimeRank = testRank
+            });
         }
 
         [HttpGet("/[controller]/Top/Test/{count}")]

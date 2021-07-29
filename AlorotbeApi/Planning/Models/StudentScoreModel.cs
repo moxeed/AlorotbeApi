@@ -35,7 +35,7 @@ namespace Alorotbe.Api.Planning.Models
         }
 
         private string GetTimeString(TimeSpan timeSpan) => 
-            (timeSpan.Days > 0 ? timeSpan.Days + " روز " : "") +
+            (timeSpan.Days > 0 ? timeSpan.Days + "روز و " : "") +
             $"{timeSpan.Hours:00}:{timeSpan.Minutes:00}";
     }
 }

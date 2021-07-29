@@ -50,9 +50,23 @@ namespace Alorotbe.Api.Controllers
 
             student.SetUserId(createdUser.Id);
             _context.Add(student);
-            await _context.SaveChangesAsync();
+            try{
+                await _context.SaveChangesAsync();
+            }catch
+            {
+                _context.Users.Remove(createdUser);
+                await _context.SaveChangesAsync();
+                return BadRequest("Invalid Student Data");
+            }
 
-            return Ok(user.Id);
+            var userModel = new UserModel
+            {
+                Id = user.Id,
+                Name = student.Name,
+                LastName = student.LastName
+            };
+
+            return Ok(userModel);
         }
 
         [HttpPost]
@@ -69,7 +83,7 @@ namespace Alorotbe.Api.Controllers
                 return Ok(new LoginResponse(token));
             }
 
-            return BadRequest("Invalid Username Or Password");
+            return BadRequest(new ErrorResponse{Error = "Invalid Username Or Password" });
         }
 
         [HttpGet]
