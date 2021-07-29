@@ -1,12 +1,13 @@
 ﻿using Core.Identity;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Core.Planing
 {
     public class DailyStudy
     {
-        public DailyStudy()
+        private DailyStudy()
         {
         }
 
@@ -30,5 +31,9 @@ namespace Core.Planing
         public Student Student { get; private set; }
 
         public ICollection<CourseStudy> CourseStudies { get; private set; }
+
+        public TimeSpan TotalStudyTime => TimeSpan.FromMinutes(CourseStudies.Sum(s => s.StudyTime.Minutes));
+        public int TotalTestCount => CourseStudies.Sum(c => c.TestCount);
+        public int Score => TotalTestCount + TotalStudyTime.Minutes;
     }
 }

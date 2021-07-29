@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Alorotbe.Api.Services;
 using Alorotbe.Persistence;
 using Core.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,7 +15,7 @@ namespace Alorotbe.Api.IOC
         public static void AddAlorotbeIdentity(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddIdentity<User, IdentityRole<int>>().AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders().AddErrorDescriber<LocalIdentityErrorDescriber>();
 
             services.AddAuthentication(options =>
             {
