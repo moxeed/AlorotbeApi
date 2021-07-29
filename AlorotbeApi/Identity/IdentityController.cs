@@ -94,7 +94,6 @@ namespace Alorotbe.Api.Controllers
             {
                 SupporterId = s.SupporterId,
                 Name = s.Name,
-                LastName = s.LastName
             }));
         }
     }

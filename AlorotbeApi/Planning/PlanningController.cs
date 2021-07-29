@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Alorotbe.Api.Planning
@@ -25,7 +24,10 @@ namespace Alorotbe.Api.Planning
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Submit()
         {
-            var isSubmited = await _context.DailyStudies.AnyAsync(d => d.StudeyDate.Date == System.DateTime.Now.Date);
+            if (!StudentId.HasValue)
+                return BadRequest("Faild");
+
+            var isSubmited = await _context.DailyStudies.AnyAsync(d => d.StudeyDate.Date == DateTime.Now.Date && d.StudentId == StudentId);
             return Ok(isSubmited);
         }
 
@@ -33,15 +35,10 @@ namespace Alorotbe.Api.Planning
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Submit(DailtyStudyModel model)
         {
-            var isSubmited = await _context.DailyStudies.AnyAsync(d => d.StudeyDate.Date == System.DateTime.Now.Date);
-            var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var studentId = _context.Students.FirstOrDefault(s => s.UserId == userId)?.StudentId;
-
-            if (!studentId.HasValue)
+            if (!StudentId.HasValue)
                 return BadRequest("Faild");
 
-            var study = model.DailyStudy(studentId.Value);
-            _context.Add(study);
+            var isSubmited = await _context.DailyStudies.AnyAsync(d => d.StudeyDate.Date == DateTime.Now.Date && d.StudentId == StudentId);
 
             if (isSubmited)
                 return BadRequest("گزارش امروز ثبت شده است");
@@ -59,29 +56,30 @@ namespace Alorotbe.Api.Planning
         }
 
         [HttpGet]
-        public async Task<IActionResult> Top([FromQuery] TopFilterModel model)
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-
         public async Task<IActionResult> Rank()
         {
-            var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var studentScore = _context.StudentScoreDailies.FirstOrDefault(s => s.UserId == userId);
+            var studentScore = _context.StudentScores.FirstOrDefault(s => s.UserId == UserId);
 
-            var sameGrades = _context.StudentScoreDailies.Where(d => d.MajorId == studentScore.MajorId 
+            if (studentScore is null)
+                return Ok(new RankModel());
+
+            var sameGrades = _context.StudentScores.Where(d => d.MajorId == studentScore.MajorId 
             && d.GradeId == studentScore.GradeId);
 
-            var testRank = await _context.StudentScoreDailies.CountAsync(d => d.TotalTestCount > studentScore.TotalTestCount);
-            var timeRank = await _context.StudentScoreDailies.CountAsync(d => d.TotalStudy > studentScore.TotalStudy); 
+            var testRank = await _context.StudentScores.CountAsync(d => d.TotalTestCount > studentScore.TotalTestCount) + 1;
+            var timeRank = await _context.StudentScores.CountAsync(d => d.TotalStudy > studentScore.TotalStudy) + 1; 
+            var scoreRank = await _context.StudentScores.CountAsync(d => d.Score > studentScore.Score) + 1; 
             
             return Ok(new RankModel 
             {
                 TestRank = testRank,
-                TimeRank = testRank
+                TimeRank = testRank,
+                ScoreRank = scoreRank
             });
         }
 
-        [HttpGet("/[controller]/Top/Test/{count}")]
-        public async Task<IActionResult> TopAllByTest(int count)
+        [HttpGet]
+        public async Task<IActionResult> Top([FromQuery] TopFilterModel model)
         {
             var data = _context.StudentScores.FromSqlRaw("GetTopStudent @p0, @p1, @p2, @p3", model.Period, model.Criterion, model.Count, model.GradeId);
             var scores = await data.ToListAsync();
