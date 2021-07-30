@@ -3,6 +3,8 @@ using Alorotbe.Api.Identity.Models;
 using Alorotbe.Api.Services;
 using Alorotbe.Persistence;
 using Core.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -59,14 +61,9 @@ namespace Alorotbe.Api.Controllers
                 return BadRequest("Invalid Student Data");
             }
 
-            var userModel = new UserModel
-            {
-                Id = user.Id,
-                Name = student.Name,
-                LastName = student.LastName
-            };
+            var token = _tokenManager.GenerateToken(user);
 
-            return Ok(userModel);
+            return Ok(new LoginResponse(token));
         }
 
         [HttpPost]
@@ -95,6 +92,30 @@ namespace Alorotbe.Api.Controllers
                 SupporterId = s.SupporterId,
                 Name = s.Name,
             }));
+        }
+
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> UserInfo()
+        {
+            var student = await _context.Students
+                .Include(s => s.User)
+                .Include(s => s.Major)
+                .Include(s => s.Grade)
+                .FirstOrDefaultAsync(s => s.UserId == UserId);
+
+            if (student is null)
+               return NotFound();
+
+            return Ok(new UserModel
+            {
+                UserName = student.User.UserName,
+                Name = student.Name,
+                LastName = student.LastName,
+                PhoneNumber = student.User.PhoneNumber,
+                Grade = student.Grade.GradeName,
+                Major = student.Major.MajorName
+            });
         }
     }
 }

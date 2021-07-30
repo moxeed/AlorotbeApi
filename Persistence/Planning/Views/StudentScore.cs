@@ -1,10 +1,12 @@
-﻿namespace Alorotbe.Persistence.Planning.Views
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Alorotbe.Persistence.Planning.Views
 {
+    [NotMapped]
     public class StudentScore
     {
         public int UserId { get; set;}
-        public string Name { get; private set; }
-        public string LastName { get; private set; }
+        public string UserName { get; private set; }
         public int MajorId { get; private set; }
         public string MajorName { get; private set; }
         public int GradeId { get; private set; }

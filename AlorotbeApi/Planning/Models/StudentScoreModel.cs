@@ -5,7 +5,7 @@ namespace Alorotbe.Api.Planning.Models
 {
     public class StudentScoreModel
     {
-        public string Name { get; }
+        public string UserName { get; }
         public string LastName { get; }
         public string MajorName { get; }
         public string GardeName { get; }
@@ -15,8 +15,7 @@ namespace Alorotbe.Api.Planning.Models
 
         public StudentScoreModel(StudentScore score)
         {
-            Name = score.Name;
-            LastName = score.LastName;
+            UserName = score.UserName;
             MajorName = score.MajorName;
             GardeName = score.GradeName;
             TotalTestCount = score.TotalTestCount;

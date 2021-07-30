@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -99,6 +100,37 @@ namespace Alorotbe.Api.Planning
                 .Take(count.Value).ToListAsync();
 
             return Ok(studies.Select(s => new DailtyStudyModel(s)));
+        }
+
+        [HttpGet("{period?}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Progress(int Period)
+        {
+            var startDate = DateTime.Now.AddDays(-Period);
+
+            var studies = await _context.DailyStudies
+                .Include(s => s.CourseStudies)
+                .Where(d => d.StudentId == StudentId
+                && d.StudeyDate > startDate).ToListAsync();
+
+            var progress = new List<ProgressModel>();
+
+            for(int i = 0; i < Period; i++)
+            {
+                var date = startDate.AddDays(i);
+                var study = studies.FirstOrDefault(s => s.StudeyDate.Date == date.Date);
+                if (study is null)
+                    progress.Add(new ProgressModel{ Date = HejriDate.NullAbleDatetimeToHejri(date)});
+                else
+                    progress.Add(new ProgressModel
+                    {
+                        Date = HejriDate.NullAbleDatetimeToHejri(date),
+                        TestCount = study.TotalTestCount,
+                        StudyMinute = study.TotalStudyTime.Minutes
+                    });
+            }
+
+            return Ok(progress);
         }
     }
 }

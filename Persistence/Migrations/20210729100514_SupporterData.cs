@@ -19,6 +19,13 @@ namespace Alorotbe.Persistence.Migrations
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
+                name: "CourseUniversity",
+                table: "Supporter",
+                type: "nvarchar(255)",
+                maxLength: 255,
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
                 name: "Experience",
                 table: "Supporter",
                 type: "nvarchar(255)",
@@ -45,34 +52,16 @@ namespace Alorotbe.Persistence.Migrations
                 type: "nvarchar(50)",
                 maxLength: 50,
                 nullable: true);
-
-            migrationBuilder.CreateTable(
-                name: "StudentScore",
-                columns: table => new
-                {
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MajorId = table.Column<int>(type: "int", nullable: false),
-                    MajorName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    GradeId = table.Column<int>(type: "int", nullable: false),
-                    GradeName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TotalStudy = table.Column<int>(type: "int", nullable: false),
-                    TotalTestCount = table.Column<int>(type: "int", nullable: false),
-                    Score = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "StudentScore");
-
             migrationBuilder.DropColumn(
                 name: "CardNumber",
+                table: "Supporter");
+
+            migrationBuilder.DropColumn(
+                name: "CourseUniversity",
                 table: "Supporter");
 
             migrationBuilder.DropColumn(

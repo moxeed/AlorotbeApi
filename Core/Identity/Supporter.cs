@@ -5,6 +5,7 @@
         public int SupporterId { get; set; }
         public string Name { get; set; }
         public string NationalCode { get; set;}
+        public string CourseUniversity { get; set; }
         public string Experience { get; set; }
         public string PhoneNumber { get; set; }
         public string CardNumber { get; set; }

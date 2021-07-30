@@ -14,6 +14,16 @@ namespace Alorotbe.Api.IOC
     {
         public static void AddAlorotbeIdentity(this IServiceCollection services, IConfiguration configuration)
         {
+            
+            services.Configure<IdentityOptions>(p => 
+            {
+               p.Password.RequireDigit = false;
+               p.Password.RequireLowercase = false;
+               p.Password.RequiredLength = 4;
+               p.Password.RequiredUniqueChars = 0;
+               p.Password.RequireUppercase = false;
+            });
+
             services.AddIdentity<User, IdentityRole<int>>().AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders().AddErrorDescriber<LocalIdentityErrorDescriber>();
 

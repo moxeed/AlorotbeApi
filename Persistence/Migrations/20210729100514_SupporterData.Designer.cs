@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Alorotbe.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210729095625_SupporterData")]
+    [Migration("20210729100514_SupporterData")]
     partial class SupporterData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -84,8 +84,6 @@ namespace Alorotbe.Persistence.Migrations
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
-
-                    b.ToTable("StudentScore");
 
                     b.ToView("StudentScore", "apialoro");
                 });
@@ -194,6 +192,10 @@ namespace Alorotbe.Persistence.Migrations
                     b.Property<string>("CardNumber")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("CourseUniversity")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Experience")
                         .HasMaxLength(255)

@@ -83,8 +83,6 @@ namespace Alorotbe.Persistence.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.ToTable("StudentScore");
-
                     b.ToView("StudentScore", "apialoro");
                 });
 
@@ -192,6 +190,10 @@ namespace Alorotbe.Persistence.Migrations
                     b.Property<string>("CardNumber")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("CourseUniversity")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Experience")
                         .HasMaxLength(255)
