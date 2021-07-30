@@ -1,3 +1,4 @@
+using Alorotbe.Api.Common;
 using Alorotbe.Api.IOC;
 using Alorotbe.Api.Services;
 using Alorotbe.Persistence;
@@ -60,7 +61,7 @@ namespace AlorotbeApi
                 });
             });
 
-
+            services.Configure<UploadOptions>(Configuration.GetSection(nameof(UploadOptions)));
             services.AddCors(c => c.AddPolicy(AllowAny, p => 
                 p.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader()));
         }

@@ -8,5 +8,6 @@
         public string Grade { get; set;}
         public string Major { get; set;}
         public string PhoneNumber { get; set;}
+        public int? ProfileId { get; set;}
     }
 }

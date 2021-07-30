@@ -7,6 +7,6 @@ namespace Alorotbe.Api.Common
 {
     public static class Converter
     {
-        public static string TimeString(this TimeSpan time) => $"{time.Hours}:{time.Minutes}";
+        public static string TimeString(this TimeSpan time) => $"{time.Hours:00}:{time.Minutes:00}";
     }
 }

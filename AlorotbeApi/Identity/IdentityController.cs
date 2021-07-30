@@ -1,13 +1,18 @@
 ﻿using Alorotbe.Api.Common;
 using Alorotbe.Api.Identity.Models;
 using Alorotbe.Api.Services;
+using Alorotbe.Core.Identity;
 using Alorotbe.Persistence;
 using Core.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -114,8 +119,46 @@ namespace Alorotbe.Api.Controllers
                 LastName = student.LastName,
                 PhoneNumber = student.User.PhoneNumber,
                 Grade = student.Grade.GradeName,
-                Major = student.Major.MajorName
+                Major = student.Major.MajorName,
+                ProfileId = student.MediaId,
             });
+        }
+
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Image([FromForm] IFormFile image, [FromServices] IOptionsSnapshot<UploadOptions> options)
+        {
+            var student = await _context.Students.FirstOrDefaultAsync(s => s.UserId == UserId);
+
+            if (student is null)
+               return NotFound();
+
+            var fileName = Guid.NewGuid().ToString();
+            var extension = Path.GetExtension(image.FileName);
+            var fullPath = options.Value.Repository+fileName+extension;
+            
+            try{
+                using var file = System.IO.File.Create(fullPath);
+                await image.CopyToAsync(file);
+            }
+            catch
+            {
+                return BadRequest("11011");
+            }
+
+            student.Profile = new Media
+            {
+               FilePath = fullPath,
+               UploadDateTime = DateTime.Now
+            };
+
+            try{
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            catch{ 
+                return BadRequest("11100");
+            }
         }
     }
 }

@@ -22,6 +22,7 @@ namespace Alorotbe.Api.IOC
                p.Password.RequiredLength = 4;
                p.Password.RequiredUniqueChars = 0;
                p.Password.RequireUppercase = false;
+               p.Password.RequireNonAlphanumeric = false;
             });
 
             services.AddIdentity<User, IdentityRole<int>>().AddEntityFrameworkStores<ApplicationDbContext>()
