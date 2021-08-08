@@ -6,6 +6,7 @@ namespace Alorotbe.Api.Planning.Models
     public class StudentScoreModel
     {
         public string UserName { get; }
+        public int? ProfileId { get; }
         public string LastName { get; }
         public string MajorName { get; }
         public string GardeName { get; }
@@ -22,6 +23,7 @@ namespace Alorotbe.Api.Planning.Models
             var timeSpan = TimeSpan.FromMinutes(score.TotalStudy);
             TotalStudy = GetTimeString(timeSpan);
             Score = score.Score;
+            ProfileId = score.ProfileId;
         }
 
         private string GetTimeString(TimeSpan timeSpan) => 

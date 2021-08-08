@@ -18,15 +18,25 @@ namespace Alorotbe.Api.BasicInfo
             _context = context;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> City() 
+        [HttpGet("{stateId}")]
+        public async Task<IActionResult> City(int stateId) 
         {
-            var cities = await _context.Cities.ToListAsync();
+            var cities = await _context.Cities
+                .Where(c => c.State.StateId == stateId)
+                .OrderBy(c => c.CityName)
+                .ToListAsync();
             return Ok(cities.Select(c => new ItemModel(c)));
         }
 
         [HttpGet]
-        public async Task<IActionResult> Course() 
+        public async Task<IActionResult> State() 
+        {
+            var states = await _context.States.ToListAsync();
+            return Ok(states.Select(c => new ItemModel(c)));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Course()
         {
             var student = await _context.Students.FirstOrDefaultAsync(s => s.UserId == UserId);
 

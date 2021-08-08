@@ -5,7 +5,8 @@ namespace Alorotbe.Persistence.Planning.Views
     [NotMapped]
     public class StudentScore
     {
-        public int UserId { get; set;}
+        public int UserId { get; private set;}
+        public int? ProfileId { get; private set;}
         public string UserName { get; private set; }
         public int MajorId { get; private set; }
         public string MajorName { get; private set; }
@@ -13,6 +14,6 @@ namespace Alorotbe.Persistence.Planning.Views
         public string GradeName { get; private set; }
         public int TotalStudy { get; private set; }
         public int TotalTestCount { get; private set; }
-        public int Score { get; set; }
+        public int Score { get; private set; }
     }
 }

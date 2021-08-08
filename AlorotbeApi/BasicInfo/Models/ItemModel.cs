@@ -13,6 +13,11 @@ namespace Alorotbe.Api.BasicInfo.Models
             Id = course.CourseId;
             Name = course.CourseName;
         }
+        public ItemModel(State state)
+        {
+            Id = state.StateId;
+            Name = state.StateName;
+        }
 
         public ItemModel(Major major)
         {

@@ -23,6 +23,8 @@ namespace Alorotbe.Persistence
         public DbSet<Major> Majors { get; set; }
         public DbSet<Grade> Grades { get; set; }
         public DbSet<City> Cities { get; set; }
+        public DbSet<State> States { get; set; }
+
         #endregion
 
         #region Identity

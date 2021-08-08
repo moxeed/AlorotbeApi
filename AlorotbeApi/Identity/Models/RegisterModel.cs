@@ -25,8 +25,9 @@ namespace Alorotbe.Api.Identity.Models
         public int? GradeId { get; set; }
         [Required]
         public int? MajorId { get; set; }
-        public int? SuppporterId { get; set; }
+        public int? SupporterId { get; set; }
+        public string SupporterName { get; set; }
 
-        internal Student Student => new(Name, LastName, AvgLevel, GPA, HasSupporter.Value, CityId.Value, MajorId.Value, GradeId.Value, SuppporterId);
+        internal Student Student => new(Name, LastName, AvgLevel, GPA, HasSupporter.Value, CityId.Value, MajorId.Value, GradeId.Value, SupporterName, SupporterId);
     }
 }

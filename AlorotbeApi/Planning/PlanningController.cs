@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -89,13 +90,17 @@ namespace Alorotbe.Api.Planning
 
         [HttpGet("{count?}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> Study(int? count) 
+        public async Task<IActionResult> Study(int? count, string startDateTime, string endDateTime)
         {
+            var startDate = HejriDate.ConvertoDatetime(startDateTime, '/');
+            var endDate = HejriDate.ConvertoDatetime(endDateTime, '/');
+
             count ??= int.MaxValue;
             var studies = await _context.DailyStudies
                 .Include(d => d.CourseStudies)
                 .ThenInclude(c => c.Course)
                 .Where(d => d.StudentId == StudentId)
+                .Where(d => d.StudeyDate <= endDate && d.StudeyDate > startDate)
                 .OrderByDescending(d => d.StudeyDate)
                 .Take(count.Value).ToListAsync();
 
@@ -104,20 +109,23 @@ namespace Alorotbe.Api.Planning
 
         [HttpGet("{period?}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> Progress(int Period)
+        public async Task<IActionResult> Progress(int Period, int month)
         {
-            var startDate = DateTime.Now.AddDays(-Period);
+            var pc = new PersianCalendar();
+            var start = pc.ToDateTime(pc.GetYear(DateTime.Now), month, 1, 0 , 0, 0, 0);
+
+            var end = start.AddDays(Period);
 
             var studies = await _context.DailyStudies
                 .Include(s => s.CourseStudies)
                 .Where(d => d.StudentId == StudentId
-                && d.StudeyDate > startDate).ToListAsync();
+                && d.StudeyDate > start && d.StudeyDate < end).ToListAsync();
 
             var progress = new List<ProgressModel>();
 
             for(int i = 0; i < Period; i++)
             {
-                var date = startDate.AddDays(i);
+                var date = start.AddDays(i);
                 var study = studies.FirstOrDefault(s => s.StudeyDate.Date == date.Date);
                 if (study is null)
                     progress.Add(new ProgressModel{ Date = HejriDate.NullAbleDatetimeToHejri(date)});

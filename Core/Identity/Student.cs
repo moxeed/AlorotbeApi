@@ -18,7 +18,7 @@ namespace Core.Identity
         public int GradeId { get; private set;}
         public int MajorId { get; private set;}
         public int UserId { get; private set; }
-        public int? SuppporterId { get; private set; }
+        public int? SupporterId { get; private set; }
         public int? MediaId { get; private set; }
         public City City { get; private set; }
         public Grade Grade { get; private set; }
@@ -26,10 +26,11 @@ namespace Core.Identity
         public User User { get; private set; }
         public Supporter Supporter { get; set; }
         public Media Profile { get; set;}
+        public string SupporterName { get; set;}
 
         public Student() { }
 
-        public Student(string name, string lastName, int? avgLevel, decimal? gPA, bool hasSupporter, int cityId, int majorId, int gradeId, int? suppporterId)
+        public Student(string name, string lastName, int? avgLevel, decimal? gPA, bool hasSupporter, int cityId, int majorId, int gradeId, string supporterName, int? supporterId)
         {
             Name = name;
             LastName = lastName;
@@ -39,7 +40,8 @@ namespace Core.Identity
             CityId = cityId;
             GradeId = gradeId;
             MajorId = majorId;
-            SuppporterId = suppporterId;
+            SupporterId = supporterId;
+            SupporterName = supporterName;
         }
 
         public void SetUserId(int userId)
