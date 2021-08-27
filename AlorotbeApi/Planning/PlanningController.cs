@@ -134,7 +134,7 @@ namespace Alorotbe.Api.Planning
                     {
                         Date = HejriDate.NullAbleDatetimeToHejri(date),
                         TestCount = study.TotalTestCount,
-                        StudyMinute = study.TotalStudyTime.Minutes
+                        StudyMinute = Convert.ToInt32(study.TotalStudyTime.TotalMinutes)
                     });
             }
 

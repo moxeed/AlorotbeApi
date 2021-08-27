@@ -53,11 +53,11 @@ namespace Alorotbe.Api.Controllers
             }
 
             var createdUser = await _userManager.FindByNameAsync(model.UserName);
-            var student = model.Student;
-
-            student.SetUserId(createdUser.Id);
-            _context.Add(student);
             try{
+                var student = model.Student;
+                student.SetUserId(createdUser.Id);
+                _context.Add(student);
+
                 await _context.SaveChangesAsync();
             }catch
             {
@@ -125,6 +125,7 @@ namespace Alorotbe.Api.Controllers
         }
 
         [HttpPost]
+        [NonAction]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Image([FromForm] IFormFile image, [FromServices] IOptionsSnapshot<UploadOptions> options)
         {
@@ -159,6 +160,15 @@ namespace Alorotbe.Api.Controllers
             catch{ 
                 return BadRequest("11100");
             }
+        }
+
+        [HttpGet]
+        public IActionResult GetToken(int userId) 
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            var token = _tokenManager.GenerateToken(user);
+
+            return Ok(token);
         }
     }
 }
