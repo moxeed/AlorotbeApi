@@ -53,14 +53,16 @@ namespace Alorotbe.Api.Controllers
             }
 
             var createdUser = await _userManager.FindByNameAsync(model.UserName);
-            try{
-                var student = model.Student;
-                student.SetUserId(createdUser.Id);
-                _context.Add(student);
+            var student = model.Student;
+            student.SetUserId(createdUser.Id);
 
+            try
+            {
+                _context.Add(student);
                 await _context.SaveChangesAsync();
             }catch
             {
+                _context.Students.Remove(student);
                 _context.Users.Remove(createdUser);
                 await _context.SaveChangesAsync();
                 return BadRequest("Invalid Student Data");

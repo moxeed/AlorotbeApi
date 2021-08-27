@@ -75,7 +75,7 @@ namespace Alorotbe.Api.Planning
             return Ok(new RankModel 
             {
                 TestRank = testRank,
-                TimeRank = testRank,
+                TimeRank = timeRank,
                 ScoreRank = scoreRank
             });
         }
