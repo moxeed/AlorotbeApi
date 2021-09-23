@@ -127,7 +127,6 @@ namespace Alorotbe.Api.Controllers
         }
 
         [HttpPost]
-        [NonAction]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Image([FromForm] IFormFile image, [FromServices] IOptionsSnapshot<UploadOptions> options)
         {
@@ -165,6 +164,7 @@ namespace Alorotbe.Api.Controllers
         }
 
         [HttpGet]
+        [NonAction]
         public IActionResult GetToken(int userId) 
         {
             var user = _context.Users.FirstOrDefault(u => u.Id == userId);
